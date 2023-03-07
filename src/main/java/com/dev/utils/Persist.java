@@ -2,15 +2,15 @@
 package com.dev.utils;
 
 
+import com.dev.objects.Product;
+import com.dev.objects.Tender;
 import com.dev.objects.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -59,6 +59,19 @@ public class Persist {
         session.close();
         return allUsers;
     }
+    public List<Tender> getAllTenders () {
+        Session session = sessionFactory.openSession();
+        List<Tender> allTender = session.createQuery("FROM Tender ").list();
+        session.close();
+        return allTender;
+    }
+
+    public List<Tender> getAllOpenTenders () {
+        Session session = sessionFactory.openSession();
+        List<Tender> allTender = session.createQuery("FROM Tender WHERE isOpen=true ").list();
+        session.close();
+        return allTender;
+    }
 
     public User getUserByToken (String token) {
         Session session = sessionFactory.openSession();
@@ -79,6 +92,20 @@ public class Persist {
         session.close();
         return user;
     }
+
+//    public void updateCredits(String username, int creditsTUpdate) {
+//        List<Integer> idList =  sessionFactory.openSession().createQuery("select username from User where username = : username")
+//                .setParameter("username", username).list();
+//        Session session = sessionFactory.openSession();
+//        int userId = idList.get(0);
+//        System.out.println();
+//        Transaction tx = null;
+//        tx = session.beginTransaction();
+//        User user = session.get(User.class, userId);
+//        user.setAmountOfCredits(creditsTUpdate);
+//        session.update(user);
+//        tx.commit();
+//    }
 
 
 

@@ -16,12 +16,20 @@ public class User {
     @Column
     private String token;
 
+//    @Column
+//    private int amountOfTenders;
+//
+//    @Column
+//    private int amountOfCredits;
+
     public User() {
     }
 
     public User(String username, String token) {
         this.username = username;
         this.token = token;
+//        this.amountOfTenders= amountOfTenders;
+//        this.amountOfCredits = amountOfCredits;
     }
 
     public int getId() {
@@ -47,4 +55,20 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+
+//    public int getAmountOfTenders() {
+//        return amountOfTenders;
+//    }
+//
+//    public void setAmountOfTenders(int amountOfTenders) {
+//        this.amountOfTenders = amountOfTenders;
+//    }
+//
+//    public int getAmountOfCredits() {
+//        return amountOfCredits;
+//    }
+//
+//    public void setAmountOfCredits(int amountOfCredits) {
+//        this.amountOfCredits = amountOfCredits;
+//    }
 }
