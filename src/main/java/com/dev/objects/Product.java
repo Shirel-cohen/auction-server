@@ -28,6 +28,8 @@ public class Product {
     @Column
     private ImageIcon productImage;
 
+
+
     public Product() {
     }
 
