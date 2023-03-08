@@ -82,6 +82,15 @@ public class Persist {
         return user;
     }
 
+    public void uploadProduct(Product product) {
+
+        boolean uploadSuccess = false;
+        Session session = sessionFactory.openSession();
+        session.save(product);
+        session.close();
+
+    }
+
 
 
     public User getUserById (int id) {

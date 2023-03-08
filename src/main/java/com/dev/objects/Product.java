@@ -26,14 +26,14 @@ public class Product {
     private String ownerOfTheProduct;
 
     @Column
-    private ImageIcon productImage;
+    private String productImage;
 
 
 
     public Product() {
     }
 
-    public Product(String productName, String productDescription, int minCost,String ownerOfTheProduct, ImageIcon productImage) {
+    public Product(String productName, String productDescription, int minCost,String ownerOfTheProduct, String productImage) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.minCost = minCost;
@@ -81,12 +81,11 @@ public class Product {
         this.ownerOfTheProduct = ownerOfTheProduct;
     }
 
-    public ImageIcon getProductImage() {
+    public String getProductImage() {
         return productImage;
     }
 
-    public void setProductImage(ImageIcon productImage) {
+    public void setProductImage(String productImage) {
         this.productImage = productImage;
     }
-
 }
