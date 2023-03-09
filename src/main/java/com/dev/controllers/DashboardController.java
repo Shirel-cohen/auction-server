@@ -1,9 +1,12 @@
 package com.dev.controllers;
 
 
+import com.dev.objects.Product;
 import com.dev.objects.User;
+import com.dev.responses.AllUsersResponse;
 import com.dev.responses.BasicResponse;
 import com.dev.responses.UsernameResponse;
+import com.dev.responses.productResponse;
 import com.dev.utils.Persist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,17 @@ public class DashboardController {
             basicResponse = new BasicResponse(false, ERROR_NO_SUCH_TOKEN);
         }
         return basicResponse;
+    }
+
+
+    @RequestMapping(value = "upload-product")
+    public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
+        Product productToAdd = new Product(productName, describe, minimalCost, owner,img);
+        productResponse productResponse = new productResponse(true,null,productToAdd);
+        persist.uploadProduct(productToAdd);
+
+        return productResponse;
+
     }
 
 
