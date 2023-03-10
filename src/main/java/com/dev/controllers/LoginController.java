@@ -1,13 +1,20 @@
 package com.dev.controllers;
 
+import com.dev.objects.Auction;
+import com.dev.objects.Offers;
 import com.dev.objects.User;
+import com.dev.responses.AllOffersResponse;
+import com.dev.responses.AllAuctionsResponse;
 import com.dev.responses.BasicResponse;
 import com.dev.responses.LoginResponse;
 import com.dev.utils.Persist;
 import com.dev.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.dev.utils.Errors.*;
 
@@ -72,5 +79,19 @@ public class LoginController {
         basicResponse.setSuccess(success);
         basicResponse.setErrorCode(errorCode);
         return basicResponse;
+    }
+
+    @RequestMapping (value = "get-all-auctions", method = RequestMethod.GET)
+    public BasicResponse getAllAuctions () {
+        List<Auction> auctions = persist.getAllAuctions();
+        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(true, null, auctions);
+        return allAuctionsResponse;
+    }
+
+    @RequestMapping (value = "get-all-offers", method = RequestMethod.GET)
+    public BasicResponse getAllOffers () {
+        List<Offers> offers = persist.getAllOffers();
+        AllOffersResponse allOffersResponse = new AllOffersResponse(true, null, offers);
+        return allOffersResponse;
     }
 }

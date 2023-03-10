@@ -2,12 +2,11 @@
 package com.dev.utils;
 
 
-import com.dev.objects.Product;
-import com.dev.objects.Tender;
+import com.dev.objects.Offers;
+import com.dev.objects.Auction;
 import com.dev.objects.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,18 +58,31 @@ public class Persist {
         session.close();
         return allUsers;
     }
-    public List<Tender> getAllTenders () {
+
+    public int getAmountOfUsers () {
         Session session = sessionFactory.openSession();
-        List<Tender> allTender = session.createQuery("FROM Tender ").list();
+        List<User> allUsers = session.createQuery("FROM User ").list();
         session.close();
-        return allTender;
+        return allUsers.toArray().length;
+    }
+    public List<Auction> getAllAuctions () {
+        Session session = sessionFactory.openSession();
+        List<Auction> allAuction = session.createQuery("FROM Auction ").list();
+        session.close();
+        return allAuction;
+    }
+    public List<Offers> getAllOffers () {
+        Session session = sessionFactory.openSession();
+        List<Offers> allOffers = session.createQuery("FROM Offers ").list();
+        session.close();
+        return allOffers;
     }
 
-    public List<Tender> getAllOpenTenders () {
+    public List<Auction> getAllOpenAuctions () {
         Session session = sessionFactory.openSession();
-        List<Tender> allTender = session.createQuery("FROM Tender WHERE isOpen=true ").list();
+        List<Auction> allAuction = session.createQuery("FROM Auction WHERE isOpen=true ").list();
         session.close();
-        return allTender;
+        return allAuction;
     }
 
     public User getUserByToken (String token) {
@@ -82,11 +94,11 @@ public class Persist {
         return user;
     }
 
-    public void uploadProduct(Product product) {
+    public void uploadProduct(Auction auction) {
 
         boolean uploadSuccess = false;
         Session session = sessionFactory.openSession();
-        session.save(product);
+        session.save(auction);
         session.close();
 
     }
@@ -101,6 +113,10 @@ public class Persist {
         session.close();
         return user;
     }
+
+
+
+
 
 //    public void updateCredits(String username, int creditsTUpdate) {
 //        List<Integer> idList =  sessionFactory.openSession().createQuery("select username from User where username = : username")

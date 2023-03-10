@@ -1,10 +1,9 @@
 package com.dev.controllers;
 
 
-import com.dev.objects.Product;
-import com.dev.objects.Tender;
+import com.dev.objects.Auction;
 import com.dev.objects.User;
-import com.dev.responses.AllTendersResponse;
+import com.dev.responses.AllAuctionsResponse;
 import com.dev.responses.AllUsersResponse;
 import com.dev.responses.BasicResponse;
 import com.dev.utils.Persist;
@@ -27,18 +26,13 @@ public class ManageController {
         AllUsersResponse allUsersResponse = new AllUsersResponse(true, null, users);
         return allUsersResponse;
     }
-    @RequestMapping (value = "get-all-tenders", method = RequestMethod.GET)
-    public BasicResponse getAllTenders () {
-        List<Tender> tenders = persist.getAllTenders();
-        AllTendersResponse allTendersResponse = new AllTendersResponse(true, null, tenders);
-        return allTendersResponse;
-    }
 
-    @RequestMapping (value = "get-all-open-tenders", method = RequestMethod.GET)
+
+    @RequestMapping (value = "get-all-open-auctions", method = RequestMethod.GET)
     public BasicResponse getAllOpenTenders () {
-        List<Tender> tenders = persist.getAllOpenTenders();
-        AllTendersResponse allTendersResponse = new AllTendersResponse(true, null, tenders);
-        return allTendersResponse;
+        List<Auction> auctions = persist.getAllOpenAuctions();
+        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(true, null, auctions);
+        return allAuctionsResponse;
     }
 
 //     @RequestMapping(value = "update-credits-for-user", method = RequestMethod.POST)
