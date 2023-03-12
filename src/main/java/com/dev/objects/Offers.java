@@ -21,9 +21,10 @@ public class Offers {
 
     @Column
     private String productName;
-
     @Column
-    private double offersAmount;
+    private String ownOfProduct;
+    @Column
+    private double amountOfOffer;
 
     @Column
     private boolean isChosen;
@@ -38,11 +39,12 @@ public class Offers {
     public Offers() {
 
     }
-    public Offers(int id, String ownOfOffer, String productName, double offersAmount, boolean isChosen) {
+    public Offers(int id, String ownOfOffer, String productName, double amountOfOffer, boolean isChosen) {
         this.id = id;
         this.ownOfOffer = ownOfOffer;
         this.productName = productName;
-        this.offersAmount = offersAmount;
+        this.ownOfProduct = ownOfProduct;
+        this.amountOfOffer = amountOfOffer;
         this.isChosen = isChosen;
         this.dateStartOffering =LocalDate.now();
         this.timeStartOffering = LocalTime.now();
@@ -72,12 +74,20 @@ public class Offers {
         this.productName = productName;
     }
 
-    public double getOffersAmount() {
-        return offersAmount;
+    public String getOwnOfProduct() {
+        return ownOfProduct;
     }
 
-    public void setOffersAmount(double offersAmount) {
-        this.offersAmount = offersAmount;
+    public void setOwnOfProduct(String ownOfProduct) {
+        this.ownOfProduct = ownOfProduct;
+    }
+
+    public double getAmountOfOffer() {
+        return amountOfOffer;
+    }
+
+    public void setAmountOfOffer(double amountOfOffer) {
+        this.amountOfOffer = amountOfOffer;
     }
 
     public boolean isChosen() {

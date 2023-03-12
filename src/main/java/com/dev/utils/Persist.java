@@ -2,11 +2,13 @@
 package com.dev.utils;
 
 
+import com.dev.models.AuctionModel;
 import com.dev.objects.Offers;
 import com.dev.objects.Auction;
 import com.dev.objects.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,34 @@ public class Persist {
         return found;
     }
 
+    public int getIdByUsername (String username) {
+        User found = null;
+        Session session = sessionFactory.openSession();
+        found = (User) session.createQuery("SELECT id FROM User WHERE username = :username")
+                .setParameter("username", username)
+                .uniqueResult();
+        session.close();
+        return found.getId();
+    }
+
+    public List<Auction> getAuctionsByUsername (String username) {
+        Session session = sessionFactory.openSession();
+        List<Auction> auctionListForUser = session.createQuery("FROM Auction WHERE ownerOfTheProduct = :username")
+                .setParameter("username", username)
+                .list();
+        session.close();
+        return auctionListForUser;
+    }
+    public int getAmountOfOffersByName (String productName) {
+
+        Session session = sessionFactory.openSession();
+        List<String> countOfOffersForProduct = session.createQuery("SELECT productName FROM Offers WHERE productName = :productName")
+                .setParameter("productName", productName)
+                .list();
+        session.close();
+        return countOfOffersForProduct.size();
+    }
+
     public void saveUser (User user) {
         Session session = sessionFactory.openSession();
         session.save(user);
@@ -51,6 +81,17 @@ public class Persist {
         session.close();
         return found;
     }
+
+    public double getAllOffersForProduct (String ownOfProduct, String productName) {
+        Session session = sessionFactory.openSession();
+    double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND productName = :productName")
+                .setParameter("ownOfProduct", ownOfProduct)
+                .setParameter("productName", productName)
+                .uniqueResult();
+        session.close();
+        return maxOffer;
+    }
+
 
     public List<User> getAllUsers () {
         Session session = sessionFactory.openSession();
@@ -103,6 +144,21 @@ public class Persist {
 
     }
 
+    public void updateCreditsForUser (String username){
+        Session session=sessionFactory.openSession();
+        Transaction transaction=session.beginTransaction();
+        User user = getUserByUsername(username);
+        if (user!=null ){
+            user.setAmountOfCredits(user.getAmountOfCredits()-2);
+        }
+        session.saveOrUpdate(user);
+        transaction.commit();
+    }
+
+
+
+
+
 
 
     public User getUserById (int id) {
@@ -113,6 +169,8 @@ public class Persist {
         session.close();
         return user;
     }
+
+
 
 
 

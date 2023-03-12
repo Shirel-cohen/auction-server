@@ -20,7 +20,7 @@ public class User {
     private int amountOfTenders;
 
     @Column
-    private int amountOfCredits;
+    private double amountOfCredits;
 
     public User() {
         this.amountOfCredits = 1000;
@@ -40,11 +40,11 @@ public class User {
         this.amountOfTenders = amountOfTenders;
     }
 
-    public int getAmountOfCredits() {
+    public double getAmountOfCredits() {
         return amountOfCredits;
     }
 
-    public void setAmountOfCredits(int amountOfCredits) {
+    public void setAmountOfCredits(double amountOfCredits) {
         this.amountOfCredits = amountOfCredits;
     }
 

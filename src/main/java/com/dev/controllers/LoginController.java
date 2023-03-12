@@ -1,5 +1,6 @@
 package com.dev.controllers;
 
+import com.dev.models.AuctionModel;
 import com.dev.objects.Auction;
 import com.dev.objects.Offers;
 import com.dev.objects.User;
@@ -84,7 +85,7 @@ public class LoginController {
     @RequestMapping (value = "get-all-auctions", method = RequestMethod.GET)
     public BasicResponse getAllAuctions () {
         List<Auction> auctions = persist.getAllAuctions();
-        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(true, null, auctions);
+        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse( auctions);
         return allAuctionsResponse;
     }
 

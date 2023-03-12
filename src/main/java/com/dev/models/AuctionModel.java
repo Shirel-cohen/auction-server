@@ -9,6 +9,7 @@ public class AuctionModel {
 
     private int id;
     private String productName;
+    private String productDescription;
     private String productImage;
     private String dateOpening;
     private int amountOfOffers;
@@ -17,9 +18,13 @@ public class AuctionModel {
     public AuctionModel () {
     }
 
-    public AuctionModel (Auction auction, int userId) {
+
+
+
+    public AuctionModel (Auction auction) {
         this.id = auction.getId();
         this.productName = auction.getProductName();
+        this.productDescription = auction.getProductDescription();
         this.productImage = auction.getProductImage();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         this.dateOpening = simpleDateFormat.format(auction.getDateOpenTender());
@@ -41,6 +46,14 @@ public class AuctionModel {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 
     public String getProductImage() {

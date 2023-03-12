@@ -1,6 +1,7 @@
 package com.dev.controllers;
 
 
+import com.dev.models.AuctionModel;
 import com.dev.objects.Auction;
 import com.dev.objects.User;
 import com.dev.responses.AllAuctionsResponse;
@@ -28,10 +29,12 @@ public class ManageController {
     }
 
 
+
+
     @RequestMapping (value = "get-all-open-auctions", method = RequestMethod.GET)
     public BasicResponse getAllOpenTenders () {
         List<Auction> auctions = persist.getAllOpenAuctions();
-        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(true, null, auctions);
+        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse( auctions);
         return allAuctionsResponse;
     }
 
