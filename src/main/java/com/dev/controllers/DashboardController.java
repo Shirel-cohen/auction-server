@@ -37,17 +37,7 @@ public class DashboardController {
         }
         return basicResponse;
     }
-//    @RequestMapping (value = "get-id-by-username", method = RequestMethod.GET)
-//    public BasicResponse getIdByUserName (String username) {
-//        int userId = persist.getIdByUsername(username);
-//        BasicResponse basicResponse = null;
-//        if (userId != 0) {
-//            basicResponse = new UsernameResponse(true, null, username);
-//        } else {
-//            basicResponse = new BasicResponse(false, ERROR_MISSING_USERNAME);
-//        }
-//        return basicResponse;
-//    }
+
 
     @RequestMapping (value = "get-all-auction-for-user", method = RequestMethod.GET)
     public AllAuctionsResponse getAllAuctionForUser (String username) {
@@ -73,6 +63,7 @@ public class DashboardController {
             basicResponse = new BasicResponse(false, ERROR_MISSING_OFFERS);
         }
         return basicResponse;
+
     }
 
     @RequestMapping(value = "upload-product")
@@ -96,20 +87,15 @@ public class DashboardController {
         return basicResponse;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        @RequestMapping (value = "get-product-by-id", method = RequestMethod.GET)
+    public BasicResponse getProductById (int id) {
+        Auction auction = persist.getAuctionById(id);
+            BasicResponse basicResponse = null;
+        if (auction != null) {
+            basicResponse = new AuctionResponse(true, null, auction);
+        } else {
+            basicResponse = new BasicResponse(false, ERROR_NO_SUCH_PRODUCT);
+        }
+        return basicResponse;
+    }
 }

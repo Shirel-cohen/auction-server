@@ -34,6 +34,16 @@ public class Persist {
         return found;
     }
 
+    public Auction getProductByProductName (String productName) {
+        Auction found = null;
+        Session session = sessionFactory.openSession();
+        found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName")
+                .setParameter("productName", productName)
+                .uniqueResult();
+        session.close();
+        return found;
+    }
+
     public int getIdByUsername (String username) {
         User found = null;
         Session session = sessionFactory.openSession();
@@ -43,6 +53,17 @@ public class Persist {
         session.close();
         return found.getId();
     }
+
+    public Auction getAuctionById (int id) {
+        Session session = sessionFactory.openSession();
+        Auction auction = (Auction) session.createQuery("From Auction WHERE id = :id")
+                .setParameter("id", id)
+                .uniqueResult();
+        session.close();
+        return auction;
+    }
+
+
 
     public List<Auction> getAuctionsByUsername (String username) {
         Session session = sessionFactory.openSession();
@@ -162,6 +183,19 @@ public class Persist {
         session.saveOrUpdate(user);
         transaction.commit();
     }
+
+    public void updateMaxOfferForAuction (String productName){
+        Session session=sessionFactory.openSession();
+        Transaction transaction=session.beginTransaction();
+        Auction auction = getProductByProductName(productName);
+        if (auction!=null ){
+            auction.setMaxOfferAmount(getAllOffersForProduct(auction.getOwnerOfTheProduct(), productName));
+        }
+        session.saveOrUpdate(auction);
+        transaction.commit();
+    }
+
+
 
 
 

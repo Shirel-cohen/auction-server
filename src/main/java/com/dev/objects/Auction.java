@@ -40,6 +40,9 @@ public class Auction {
     @Column
     private String ownerOfTheProduct;
 
+    @Column
+    private double maxOfferAmount;
+
     public Auction(){
 
     }
@@ -142,4 +145,13 @@ public class Auction {
     public void setOpen(boolean open) {
         isOpen = open;
     }
+
+    public double getMaxOfferAmount() {
+        return maxOfferAmount;
+    }
+
+    public void setMaxOfferAmount(double maxOfferAmount) {
+        this.maxOfferAmount = maxOfferAmount;
+    }
 }
+
