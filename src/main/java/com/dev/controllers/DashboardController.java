@@ -52,23 +52,16 @@ public class DashboardController {
     @RequestMapping (value = "get-all-auction-for-user", method = RequestMethod.GET)
     public AllAuctionsResponse getAllAuctionForUser (String username) {
         List<Auction> auctionListForUser = persist.getAuctionsByUsername(username);
-       // int userId = persist.getIdByUsername(username);
         AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(auctionListForUser );
         return allAuctionsResponse;
     }
+    @RequestMapping (value = "get-all-offers-for-user", method = RequestMethod.GET)
+    public AllOffersResponse getAllOffersForUser (String username) {
+        List<Offers> offersListForUser = persist.getOffersByUsername(username);
+        AllOffersResponse allOffersResponse = new AllOffersResponse(true,null,offersListForUser );
+        return allOffersResponse;
+    }
 
-//    @RequestMapping (value = "get-max-offer-for-product", method = RequestMethod.GET)
-//
-//    public BasicResponse getMaxOfferForProduct (String username,String productName) {
-//        int maxOffer = persist.getAllOffersForProduct(username, productName);
-//        BasicResponse basicResponse = null;
-//        if (maxOffer != 0) {
-//            basicResponse = new OfferResponse(true, null, maxOffer);
-//        } else {
-//            basicResponse = new BasicResponse(false, ERROR_MISSING_OFFERS);
-//        }
-//        return basicResponse;
-//    }
         @RequestMapping (value = "get-max-offer-for-product", method = RequestMethod.GET)
 
     public BasicResponse getMaxOfferForProduct (String username,String productName) {
@@ -81,15 +74,6 @@ public class DashboardController {
         }
         return basicResponse;
     }
-
-
-
-
-
-
-
-
-
 
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {

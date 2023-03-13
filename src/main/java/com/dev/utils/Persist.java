@@ -52,6 +52,14 @@ public class Persist {
         session.close();
         return auctionListForUser;
     }
+    public List<Offers> getOffersByUsername (String username) {
+        Session session = sessionFactory.openSession();
+        List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer = :username")
+                .setParameter("username", username)
+                .list();
+        session.close();
+        return offersListForUser;
+    }
     public int getAmountOfOffersByName (String productName) {
 
         Session session = sessionFactory.openSession();

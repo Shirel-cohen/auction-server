@@ -45,7 +45,7 @@ public class Offers {
         this.productName = productName;
         this.ownOfProduct = ownOfProduct;
         this.amountOfOffer = amountOfOffer;
-        this.isChosen = isChosen;
+        this.isChosen = false;
         this.dateStartOffering =LocalDate.now();
         this.timeStartOffering = LocalTime.now();
     }

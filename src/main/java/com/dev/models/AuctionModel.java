@@ -14,6 +14,7 @@ public class AuctionModel {
     private String dateOpening;
     private int amountOfOffers;
     private int amountOfOfferingForUser;
+    private boolean isOpen;
 
     public AuctionModel () {
     }
@@ -26,6 +27,7 @@ public class AuctionModel {
         this.productName = auction.getProductName();
         this.productDescription = auction.getProductDescription();
         this.productImage = auction.getProductImage();
+        this.isOpen = true;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         this.dateOpening = simpleDateFormat.format(auction.getDateOpenTender());
         this.amountOfOffers = auction.getAmountOfOffering();
@@ -86,5 +88,13 @@ public class AuctionModel {
 
     public void setAmountOfOfferingForUser(int amountOfOfferingForUser) {
         this.amountOfOfferingForUser = amountOfOfferingForUser;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 }
