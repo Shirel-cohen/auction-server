@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -34,24 +35,15 @@ public class Persist {
         return found;
     }
 
-    public Auction getProductByProductName (String productName) {
+    public Auction getProductByProductNameAndOwnerOf (String productName, String ownerOfProduct) {
         Auction found = null;
         Session session = sessionFactory.openSession();
-        found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName")
+        found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName and ownerOfTheProduct = :ownerOfProduct")
                 .setParameter("productName", productName)
+                .setParameter("ownerOfProduct",ownerOfProduct)
                 .uniqueResult();
         session.close();
         return found;
-    }
-
-    public int getIdByUsername (String username) {
-        User found = null;
-        Session session = sessionFactory.openSession();
-        found = (User) session.createQuery("SELECT id FROM User WHERE username = :username")
-                .setParameter("username", username)
-                .uniqueResult();
-        session.close();
-        return found.getId();
     }
 
     public Auction getAuctionById (int id) {
@@ -63,8 +55,6 @@ public class Persist {
         return auction;
     }
 
-
-
     public List<Auction> getAuctionsByUsername (String username) {
         Session session = sessionFactory.openSession();
         List<Auction> auctionListForUser = session.createQuery("FROM Auction WHERE ownerOfTheProduct = :username")
@@ -73,6 +63,7 @@ public class Persist {
         session.close();
         return auctionListForUser;
     }
+
     public List<Offers> getOffersByUsername (String username) {
         Session session = sessionFactory.openSession();
         List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer = :username")
@@ -81,8 +72,18 @@ public class Persist {
         session.close();
         return offersListForUser;
     }
-    public int getAmountOfOffersByName (String productName) {
 
+    public double getMaxOfferByUsernameAndProduct (String username, String productName){
+        Session session = sessionFactory.openSession();
+        double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer = :username AND productName = :productName")
+                .setParameter("username", username)
+                .setParameter("productName", productName)
+                .uniqueResult();
+        session.close();
+        return maxOffer;
+    }
+
+    public int getAmountOfOffersByName (String productName) {
         Session session = sessionFactory.openSession();
         List<String> countOfOffersForProduct = session.createQuery("SELECT productName FROM Offers WHERE productName = :productName")
                 .setParameter("productName", productName)
@@ -97,7 +98,11 @@ public class Persist {
         session.close();
     }
 
-
+    public void saveOffer (Offers offer) {
+        Session session = sessionFactory.openSession();
+        session.save(offer);
+        session.close();
+    }
 
     public User getUserByUsernameAndToken (String username, String token) {
         User found = null;
@@ -121,7 +126,6 @@ public class Persist {
         return maxOffer;
     }
 
-
     public List<User> getAllUsers () {
         Session session = sessionFactory.openSession();
         List<User> allUsers = session.createQuery("FROM User ").list();
@@ -129,18 +133,13 @@ public class Persist {
         return allUsers;
     }
 
-    public int getAmountOfUsers () {
-        Session session = sessionFactory.openSession();
-        List<User> allUsers = session.createQuery("FROM User ").list();
-        session.close();
-        return allUsers.toArray().length;
-    }
     public List<Auction> getAllAuctions () {
         Session session = sessionFactory.openSession();
         List<Auction> allAuction = session.createQuery("FROM Auction ").list();
         session.close();
         return allAuction;
     }
+
     public List<Offers> getAllOffers () {
         Session session = sessionFactory.openSession();
         List<Offers> allOffers = session.createQuery("FROM Offers ").list();
@@ -165,12 +164,10 @@ public class Persist {
     }
 
     public void uploadProduct(Auction auction) {
-
-        boolean uploadSuccess = false;
+       // boolean uploadSuccess = false;
         Session session = sessionFactory.openSession();
         session.save(auction);
         session.close();
-
     }
 
     public void updateCreditsForUser (String username){
@@ -184,7 +181,7 @@ public class Persist {
         transaction.commit();
     }
 
-    public void updateMaxOfferForAuction (String productName){
+  /* public void updateMaxOfferForAuction (String productName){
         Session session=sessionFactory.openSession();
         Transaction transaction=session.beginTransaction();
         Auction auction = getProductByProductName(productName);
@@ -193,28 +190,17 @@ public class Persist {
         }
         session.saveOrUpdate(auction);
         transaction.commit();
-    }
+    }*/
 
-
-
-
-
-
-
-
-
-    public User getUserById (int id) {
-        Session session = sessionFactory.openSession();
-        User user = (User) session.createQuery("FROM User WHERE id = :id")
-                .setParameter("id", id)
-                .uniqueResult();
+    public List<Offers> listOfMyOffers (String username,String productName){
+        Session session= sessionFactory.openSession();
+        List<Offers> listOfOffers = session.createQuery("SELECT amountOfOffer FROM Offers WHERE ownOfOffer = :username and productName = :productName")
+                .setParameter("username",username)
+                .setParameter("productName",productName)
+                .list();
         session.close();
-        return user;
+        return listOfOffers;
     }
-
-
-
-
 
 
 

@@ -1,5 +1,7 @@
 package com.dev.objects;
 
+import com.dev.utils.Constants;
+
 import javax.persistence.*;
 import javax.swing.*;
 import java.util.Date;
@@ -26,9 +28,6 @@ public class Auction {
     private int amountOfOffering;
 
     @Column
-    private int getAmountOfOfferingForUser;
-
-    @Column
     private boolean isOpen;
 
     @Column
@@ -47,12 +46,11 @@ public class Auction {
 
     }
 
-    public Auction(String productName, String productImage, String dateOpenTender, int amountOfOffering, int getAmountOfOfferingForUser, String productDescription, int minCost) {
+    public Auction(String productName, String productImage, String dateOpenTender, int amountOfOffering, String productDescription, int minCost) {
         this.productName = productName;
         this.productImage = productImage;
         this.dateOpenTender = new Date();
-        this.amountOfOffering = amountOfOffering;
-        this.getAmountOfOfferingForUser = getAmountOfOfferingForUser;
+        this.amountOfOffering = Constants.STARTING_OFFERING_NUMBER;
         this.isOpen = true;
         this.productDescription= productDescription;
         this.minCost = minCost;
@@ -65,6 +63,9 @@ public class Auction {
         this.ownerOfTheProduct=ownerOfTheProduct;
         this.productImage = productImage;
         this.isOpen=true;
+        this.dateOpenTender=new Date();
+        this.maxOfferAmount = Constants.STARTING_OFFERING_NUMBER;
+        this.amountOfOffering = Constants.STARTING_OFFERING_NUMBER;
     }
     public int getId() {
         return id;
@@ -128,14 +129,6 @@ public class Auction {
 
     public void setAmountOfOffering(int amountOfOffering) {
         this.amountOfOffering = amountOfOffering;
-    }
-
-    public int getGetAmountOfOfferingForUser() {
-        return getAmountOfOfferingForUser;
-    }
-
-    public void setGetAmountOfOfferingForUser(int getAmountOfOfferingForUser) {
-        this.getAmountOfOfferingForUser = getAmountOfOfferingForUser;
     }
 
     public boolean isOpen() {

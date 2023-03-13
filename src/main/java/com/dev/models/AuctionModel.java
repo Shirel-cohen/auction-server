@@ -31,7 +31,6 @@ public class AuctionModel {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         this.dateOpening = simpleDateFormat.format(auction.getDateOpenTender());
         this.amountOfOffers = auction.getAmountOfOffering();
-        this.amountOfOffers = auction.getGetAmountOfOfferingForUser();
     }
 
     public int getId() {

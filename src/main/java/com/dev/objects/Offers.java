@@ -17,6 +17,9 @@ public class Offers {
     private int id;
 
     @Column
+    private int auctionId;
+
+    @Column
     private String ownOfOffer;
 
     @Column
@@ -39,8 +42,8 @@ public class Offers {
     public Offers() {
 
     }
-    public Offers(int id, String ownOfOffer, String productName, double amountOfOffer, boolean isChosen) {
-        this.id = id;
+    public Offers(int auctionId, String ownOfOffer, String productName,String ownOfProduct, double amountOfOffer) {
+        this.auctionId= auctionId;
         this.ownOfOffer = ownOfOffer;
         this.productName = productName;
         this.ownOfProduct = ownOfProduct;
@@ -112,6 +115,14 @@ public class Offers {
 
     public void setTimeStartOffering(LocalTime timeStartOffering) {
         this.timeStartOffering = timeStartOffering;
+    }
+
+    public int getAuctionId() {
+        return auctionId;
+    }
+
+    public void setAuctionId(int auctionId) {
+        this.auctionId = auctionId;
     }
 }
 

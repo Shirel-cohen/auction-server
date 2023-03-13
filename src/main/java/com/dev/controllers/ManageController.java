@@ -28,13 +28,10 @@ public class ManageController {
         return allUsersResponse;
     }
 
-
-
-
     @RequestMapping (value = "get-all-open-auctions", method = RequestMethod.GET)
     public BasicResponse getAllOpenTenders () {
         List<Auction> auctions = persist.getAllOpenAuctions();
-        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse( auctions);
+        AllAuctionsResponse allAuctionsResponse = new AllAuctionsResponse(auctions);
         return allAuctionsResponse;
     }
 
