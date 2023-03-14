@@ -1,21 +1,20 @@
 package com.dev.controllers;
 
 
-import com.dev.models.AuctionModel;
 import com.dev.objects.Auction;
 import com.dev.objects.Offers;
 import com.dev.objects.User;
 import com.dev.responses.*;
+import com.dev.utils.Constants;
 import com.dev.utils.Persist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.awt.image.BandCombineOp;
 import java.util.List;
-
 import static com.dev.utils.Errors.*;
+
+
 
 @RestController
 public class DashboardController {
@@ -53,8 +52,8 @@ public class DashboardController {
     }
 
     @RequestMapping(value = "get-max-offer-for-product", method = RequestMethod.GET)
-    public BasicResponse getMaxOfferForProduct(String username, String productName) {
-        double maxOffer = persist.getAllOffersForProduct(username, productName);
+    public BasicResponse getMaxOfferForProduct(String username, int auctionId) {
+        double maxOffer = persist.getMaxOfferForProduct(username, auctionId);
         BasicResponse basicResponse = null;
         if (maxOffer != 0) {
             basicResponse = new OfferResponse(true, null, maxOffer);
@@ -111,10 +110,13 @@ public class DashboardController {
     }
 
     @RequestMapping(value = "send-offer")
-    public BasicResponse setOfferForAuction(String ownOfOffer, String productName, double amountOfOffer, String ownOfProduct) {
+    public BasicResponse setOfferForAuction(String ownOfOffer, String productName, double amountOfOffer, String ownOfProduct, int amountOfOffering) {
         User user = persist.getUserByUsername(ownOfOffer);
-        double maxOffer = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
         Auction product = persist.getProductByProductNameAndOwnerOf (productName,ownOfProduct);
+        double maxOffer = Constants.STARTING_OFFERING_NUMBER;
+        if(amountOfOffering > Constants.MINIMAL_OFFERING_NUMBER) {
+            maxOffer = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
+        }
         BasicResponse basicResponse = null;
         if (user.getAmountOfCredits() < amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_NOT_ENOUGH_CREDITS);
@@ -127,6 +129,8 @@ public class DashboardController {
         } else {
             Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
             persist.saveOffer(newOffer);
+            product.setAmountOfOffering(amountOfOffering);
+            persist.updateAuction(product);
             basicResponse = new BasicResponse(true, null);
         }
         return basicResponse;

@@ -104,6 +104,12 @@ public class Persist {
         session.close();
     }
 
+    public void updateAuction (Auction auction) {
+        Session session = sessionFactory.openSession();
+        session.saveOrUpdate(auction);
+        session.close();
+    }
+
     public User getUserByUsernameAndToken (String username, String token) {
         User found = null;
         Session session = sessionFactory.openSession();
@@ -116,12 +122,15 @@ public class Persist {
         return found;
     }
 
-    public double getAllOffersForProduct (String ownOfProduct, String productName) {
+    public double getMaxOfferForProduct(String ownOfProduct, int auctionId) {
         Session session = sessionFactory.openSession();
-    double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND productName = :productName")
+        double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND auctionId = :auctionId")
                 .setParameter("ownOfProduct", ownOfProduct)
-                .setParameter("productName", productName)
+                .setParameter("auctionId", auctionId)
                 .uniqueResult();
+        Auction auction = getAuctionById(auctionId);
+        auction.setMaxOfferAmount(maxOffer);
+        session.save(auction);
         session.close();
         return maxOffer;
     }
