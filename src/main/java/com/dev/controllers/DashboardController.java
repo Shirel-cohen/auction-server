@@ -110,22 +110,22 @@ public class DashboardController {
         return basicResponse;
     }
 
-    @RequestMapping(value = "send-offer", method = RequestMethod.POST)
-    public BasicResponse setOfferForAuction(String username, String productName, double offerAmount, String ownerOfProduct) {
-        User user = persist.getUserByUsername(username);
-        double maxOffer = persist.getMaxOfferByUsernameAndProduct(username, productName);
-        Auction product = persist.getProductByProductNameAndOwnerOf (productName,ownerOfProduct);
+    @RequestMapping(value = "send-offer")
+    public BasicResponse setOfferForAuction(String ownOfOffer, String productName, double amountOfOffer, String ownOfProduct) {
+        User user = persist.getUserByUsername(ownOfOffer);
+        double maxOffer = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
+        Auction product = persist.getProductByProductNameAndOwnerOf (productName,ownOfProduct);
         BasicResponse basicResponse = null;
-        if (user.getAmountOfCredits() < offerAmount) {
+        if (user.getAmountOfCredits() < amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_NOT_ENOUGH_CREDITS);
         }
-        if (maxOffer < offerAmount) {
+        else if (maxOffer > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_NOT_HIGH_ENOUGH);
         }
-        if (product.getMinCost() > offerAmount) {
+        else if (product.getMinCost() > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_LOWER_THAN_MIN_COST);
         } else {
-            Offers newOffer = new Offers(product.getId(),username,productName,ownerOfProduct,offerAmount);
+            Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
             persist.saveOffer(newOffer);
             basicResponse = new BasicResponse(true, null);
         }
