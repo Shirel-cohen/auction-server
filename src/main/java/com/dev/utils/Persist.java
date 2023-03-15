@@ -104,9 +104,13 @@ public class Persist {
         session.close();
     }
 
-    public void updateAuction (Auction auction) {
+    public void updateAuction (Integer auctionId, int amountOfOffering) {
         Session session = sessionFactory.openSession();
-        session.saveOrUpdate(auction);
+        Transaction transaction = session.beginTransaction();
+        Auction auction = session.get(Auction.class, auctionId);
+        auction.setAmountOfOffering(amountOfOffering);
+        session.update(auction);
+        transaction.commit();
         session.close();
     }
 

@@ -129,8 +129,7 @@ public class DashboardController {
         } else {
             Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
             persist.saveOffer(newOffer);
-            product.setAmountOfOffering(amountOfOffering);
-            persist.updateAuction(product);
+            persist.updateAuction(product.getId(),amountOfOffering);
             basicResponse = new BasicResponse(true, null);
         }
         return basicResponse;
