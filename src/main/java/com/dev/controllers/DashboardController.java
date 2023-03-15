@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+
 import static com.dev.utils.Errors.*;
 
 
@@ -51,11 +52,18 @@ public class DashboardController {
         return allOffersResponse;
     }
 
+    @RequestMapping(value = "get-credits-for-user", method = RequestMethod.GET)
+    public CreditsResponse getCreditsForUser(String username) {
+        Double creditsForUser = persist.getCreditsByUsername(username);
+        CreditsResponse creditsResponse = new CreditsResponse(true, null, creditsForUser);
+        return creditsResponse;
+    }
+
     @RequestMapping(value = "get-max-offer-for-product", method = RequestMethod.GET)
     public BasicResponse getMaxOfferForProduct(String username, int auctionId) {
-        double maxOffer = persist.getMaxOfferForProduct(username, auctionId);
+        Double maxOffer = persist.getMaxOfferForProduct(username, auctionId);
         BasicResponse basicResponse = null;
-        if (maxOffer != 0) {
+        if (maxOffer != null) {
             basicResponse = new OfferResponse(true, null, maxOffer);
         } else {
             basicResponse = new BasicResponse(false, ERROR_MISSING_OFFERS);
@@ -72,18 +80,19 @@ public class DashboardController {
         return auctionResponse;
     }
 
-    @RequestMapping(value = "close-auction")
-    public BasicResponse closeAction(Auction auction) {
-        int countOfOffering = persist.getAmountOfOffersByName(auction.getProductName());
+    @RequestMapping(value = "close-auction",method = RequestMethod.POST)
+    public BasicResponse closeAuction(int auctionId){
         BasicResponse basicResponse = null;
-        if (countOfOffering >= 3) {
-            auction.setOpen(false);
-            basicResponse = new BasicResponse(true, null);
-        } else {
-            basicResponse = new BasicResponse(false, ERROR_LESS_THAN_3_OFFERS);
+        Auction auction = persist.getAuctionById(auctionId);
+        if(auction.getAmountOfOffering() < 3){
+            basicResponse = new BasicResponse(false,ERROR_LESS_THAN_3_OFFERS);
+        }
+        else {
+            persist.closeAuction(auctionId);
+            basicResponse = new BasicResponse(true,null);
         }
         return basicResponse;
-    }
+ }
 
     @RequestMapping(value = "get-product-by-id", method = RequestMethod.GET)
     public BasicResponse getProductById(int id) {
@@ -134,6 +143,8 @@ public class DashboardController {
         }
         return basicResponse;
     }
+
+
 }
 
 

@@ -17,7 +17,7 @@ public class User {
     private String token;
 
     @Column
-    private int amountOfTenders;
+    private int amountOfAuctions;
 
     @Column
     private double amountOfCredits;
@@ -32,12 +32,12 @@ public class User {
         this.amountOfCredits = 1000;
     }
 
-    public int getAmountOfTenders() {
-        return amountOfTenders;
+    public int getAmountOfAuctions() {
+        return amountOfAuctions;
     }
 
-    public void setAmountOfTenders(int amountOfTenders) {
-        this.amountOfTenders = amountOfTenders;
+    public void setAmountOfAuctions(int amountOfTenders) {
+        this.amountOfAuctions = amountOfTenders;
     }
 
     public double getAmountOfCredits() {

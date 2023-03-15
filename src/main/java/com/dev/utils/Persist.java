@@ -64,6 +64,16 @@ public class Persist {
         return auctionListForUser;
     }
 
+    public Double getCreditsByUsername (String username) {
+        Session session = sessionFactory.openSession();
+        Double CreditsForUser = (Double) session.createQuery("SELECT amountOfCredits FROM User WHERE username = :username")
+                .setParameter("username", username)
+                .uniqueResult();
+        session.close();
+        return CreditsForUser;
+    }
+
+
     public List<Offers> getOffersByUsername (String username) {
         Session session = sessionFactory.openSession();
         List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer = :username")
@@ -114,6 +124,16 @@ public class Persist {
         session.close();
     }
 
+    public void closeAuction (int auctionId){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Auction auction = session.get(Auction.class, auctionId);
+        auction.setOpen(false);
+        session.update(auction);
+        transaction.commit();
+        session.close();
+    }
+
     public User getUserByUsernameAndToken (String username, String token) {
         User found = null;
         Session session = sessionFactory.openSession();
@@ -126,15 +146,12 @@ public class Persist {
         return found;
     }
 
-    public double getMaxOfferForProduct(String ownOfProduct, int auctionId) {
+    public Double getMaxOfferForProduct(String ownOfProduct, int auctionId) {
         Session session = sessionFactory.openSession();
-        double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND auctionId = :auctionId")
+        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND auctionId = :auctionId")
                 .setParameter("ownOfProduct", ownOfProduct)
                 .setParameter("auctionId", auctionId)
                 .uniqueResult();
-        Auction auction = getAuctionById(auctionId);
-        auction.setMaxOfferAmount(maxOffer);
-        session.save(auction);
         session.close();
         return maxOffer;
     }
@@ -214,6 +231,8 @@ public class Persist {
         session.close();
         return listOfOffers;
     }
+
+
 
 
 
