@@ -74,7 +74,6 @@ public class DashboardController {
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
         Auction productToAdd = new Auction(productName, describe, minimalCost, owner, img);
-
         AuctionResponse auctionResponse = new AuctionResponse(true, null, productToAdd);
         persist.uploadProduct(productToAdd);
         return auctionResponse;
@@ -89,6 +88,7 @@ public class DashboardController {
         }
         else {
             persist.closeAuction(auctionId);
+            // persist.updateOfferWon(auctionId);
             basicResponse = new BasicResponse(true,null);
         }
         return basicResponse;
@@ -137,14 +137,15 @@ public class DashboardController {
             basicResponse = new BasicResponse(false, ERROR_OFFER_LOWER_THAN_MIN_COST);
         } else {
             Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
+        //    persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
             persist.saveOffer(newOffer);
             persist.updateAuction(product.getId(),amountOfOffering);
             basicResponse = new BasicResponse(true, null);
         }
         return basicResponse;
     }
-
-
 }
+
+
 
 

@@ -83,23 +83,14 @@ public class Persist {
         return offersListForUser;
     }
 
-    public double getMaxOfferByUsernameAndProduct (String username, String productName){
+    public Double getMaxOfferByUsernameAndProduct (String username, String productName){
         Session session = sessionFactory.openSession();
-        double maxOffer = (double)session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer = :username AND productName = :productName")
+        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer = :username AND productName = :productName")
                 .setParameter("username", username)
                 .setParameter("productName", productName)
                 .uniqueResult();
         session.close();
         return maxOffer;
-    }
-
-    public int getAmountOfOffersByName (String productName) {
-        Session session = sessionFactory.openSession();
-        List<String> countOfOffersForProduct = session.createQuery("SELECT productName FROM Offers WHERE productName = :productName")
-                .setParameter("productName", productName)
-                .list();
-        session.close();
-        return countOfOffersForProduct.size();
     }
 
     public void saveUser (User user) {
@@ -120,6 +111,23 @@ public class Persist {
         Auction auction = session.get(Auction.class, auctionId);
         auction.setAmountOfOffering(amountOfOffering);
         session.update(auction);
+        transaction.commit();
+        session.close();
+    }
+
+    public void updateUserCredits (String username, double amountOfOffer , String productName){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = getUserByUsername(username);
+        Double maxOfferForProduct = getMaxOfferByUsernameAndProduct(username,productName);
+        double currentCredits = user.getAmountOfCredits();
+        if(maxOfferForProduct != Constants.STARTING_OFFERING_NUMBER) {
+            double amountToSubtract = amountOfOffer - maxOfferForProduct;
+            user.setAmountOfCredits(currentCredits - (amountToSubtract + maxOfferForProduct + Constants.OFFER_UPLOAD_COST));
+        }else {
+            user.setAmountOfCredits(currentCredits - Constants.OFFER_UPLOAD_COST - amountOfOffer);
+        }
+        session.update(user);
         transaction.commit();
         session.close();
     }
@@ -154,6 +162,12 @@ public class Persist {
                 .uniqueResult();
         session.close();
         return maxOffer;
+    }
+
+    public void updateOfferWon(int auctionId) {
+        Auction auction = getAuctionById(auctionId);
+
+
     }
 
     public List<User> getAllUsers () {
@@ -194,33 +208,18 @@ public class Persist {
     }
 
     public void uploadProduct(Auction auction) {
-       // boolean uploadSuccess = false;
-        Session session = sessionFactory.openSession();
-        session.save(auction);
-        session.close();
-    }
-
-    public void updateCreditsForUser (String username){
-        Session session=sessionFactory.openSession();
-        Transaction transaction=session.beginTransaction();
-        User user = getUserByUsername(username);
-        if (user!=null ){
-            user.setAmountOfCredits(user.getAmountOfCredits()-2);
-        }
-        session.saveOrUpdate(user);
+        Session session1 = sessionFactory.openSession();
+        session1.save(auction);
+        session1.close();
+        Session session2 = sessionFactory.openSession();
+        Transaction transaction = session2.beginTransaction();
+        User user = getUserByUsername(auction.getOwnerOfTheProduct());
+        double currentCredits = user.getAmountOfCredits();
+        user.setAmountOfCredits(currentCredits - Constants.PRODUCT_UPLOAD_COST);
+        session2.update(user);
         transaction.commit();
+        session2.close();
     }
-
-  /* public void updateMaxOfferForAuction (String productName){
-        Session session=sessionFactory.openSession();
-        Transaction transaction=session.beginTransaction();
-        Auction auction = getProductByProductName(productName);
-        if (auction!=null ){
-            auction.setMaxOfferAmount(getAllOffersForProduct(auction.getOwnerOfTheProduct(), productName));
-        }
-        session.saveOrUpdate(auction);
-        transaction.commit();
-    }*/
 
     public List<Offers> listOfMyOffers (String username,String productName){
         Session session= sessionFactory.openSession();
