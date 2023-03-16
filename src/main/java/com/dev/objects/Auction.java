@@ -50,7 +50,7 @@ public class Auction {
         this.productName = productName;
         this.productImage = productImage;
         this.dateOpenTender = new Date();
-        this.amountOfOffering = Constants.STARTING_OFFERING_NUMBER;
+        this.amountOfOffering = 0;
         this.isOpen = true;
         this.productDescription= productDescription;
         this.minCost = minCost;
@@ -65,7 +65,7 @@ public class Auction {
         this.isOpen=true;
         this.dateOpenTender=new Date();
         this.maxOfferAmount = Constants.STARTING_OFFERING_NUMBER;
-        this.amountOfOffering = Constants.STARTING_OFFERING_NUMBER;
+        this.amountOfOffering = 0;
     }
     public int getId() {
         return id;

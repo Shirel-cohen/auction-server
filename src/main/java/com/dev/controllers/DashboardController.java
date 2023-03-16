@@ -59,18 +59,6 @@ public class DashboardController {
         return creditsResponse;
     }
 
-    @RequestMapping(value = "get-max-offer-for-product", method = RequestMethod.GET)
-    public BasicResponse getMaxOfferForProduct(String username, int auctionId) {
-        Double maxOffer = persist.getMaxOfferForProduct(username, auctionId);
-        BasicResponse basicResponse = null;
-        if (maxOffer != null) {
-            basicResponse = new OfferResponse(true, null, maxOffer);
-        } else {
-            basicResponse = new BasicResponse(false, ERROR_MISSING_OFFERS);
-        }
-        return basicResponse;
-    }
-
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
         Auction productToAdd = new Auction(productName, describe, minimalCost, owner, img);
@@ -92,7 +80,7 @@ public class DashboardController {
             basicResponse = new BasicResponse(true,null);
         }
         return basicResponse;
- }
+    }
 
     @RequestMapping(value = "get-product-by-id", method = RequestMethod.GET)
     public BasicResponse getProductById(int id) {
@@ -122,30 +110,31 @@ public class DashboardController {
     public BasicResponse setOfferForAuction(String ownOfOffer, String productName, double amountOfOffer, String ownOfProduct, int amountOfOffering) {
         User user = persist.getUserByUsername(ownOfOffer);
         Auction product = persist.getProductByProductNameAndOwnerOf (productName,ownOfProduct);
-        double maxOffer = Constants.STARTING_OFFERING_NUMBER;
-        if(amountOfOffering > Constants.MINIMAL_OFFERING_NUMBER) {
-            maxOffer = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
+        Double maxOfferForSpecificUsername = Constants.STARTING_OFFERING_NUMBER;
+        if(persist.getAmountOfOffersForProductByUsername(ownOfOffer,productName) >= Constants.MINIMAL_OFFERING_NUMBER) {
+            maxOfferForSpecificUsername = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
         }
         BasicResponse basicResponse = null;
         if (user.getAmountOfCredits() < amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_NOT_ENOUGH_CREDITS);
         }
-        else if (maxOffer > amountOfOffer) {
+        else if (maxOfferForSpecificUsername > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_NOT_HIGH_ENOUGH);
         }
         else if (product.getMinCost() > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_LOWER_THAN_MIN_COST);
         } else {
             Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
-        //    persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
+            persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
             persist.saveOffer(newOffer);
-            persist.updateAuction(product.getId(),amountOfOffering);
+            persist.updateAmountOfOffersForAuction(product.getId(),amountOfOffering);
+            Double maxOfferForProductInGeneral = persist.getMaxOfferForProduct(ownOfProduct, product.getId());
+            if(maxOfferForProductInGeneral == null){
+                maxOfferForProductInGeneral = 0.0;
+            }
+            persist.updateMaxOfferForAuction(product.getId(),maxOfferForProductInGeneral);
             basicResponse = new BasicResponse(true, null);
         }
         return basicResponse;
     }
 }
-
-
-
-

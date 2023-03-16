@@ -1,4 +1,3 @@
-
 package com.dev.utils;
 
 
@@ -44,6 +43,16 @@ public class Persist {
                 .uniqueResult();
         session.close();
         return found;
+    }
+
+    public Integer getAmountOfOffersForProductByUsername (String username, String productName){
+        Session session = sessionFactory.openSession();
+        List<Offers> amountOfOffers = session.createQuery("FROM Offers WHERE ownOfOffer = :username and productName = :productName")
+                .setParameter("username",username)
+                .setParameter("productName" ,productName)
+                .list();
+        session.close();
+        return amountOfOffers.size();
     }
 
     public Auction getAuctionById (int id) {
@@ -105,11 +114,21 @@ public class Persist {
         session.close();
     }
 
-    public void updateAuction (Integer auctionId, int amountOfOffering) {
+    public void updateAmountOfOffersForAuction(Integer auctionId, int amountOfOffering) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Auction auction = session.get(Auction.class, auctionId);
         auction.setAmountOfOffering(amountOfOffering);
+        session.update(auction);
+        transaction.commit();
+        session.close();
+    }
+
+    public void updateMaxOfferForAuction (Integer auctionId, Double maxOffer){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Auction auction = getAuctionById(auctionId);
+        auction.setMaxOfferAmount(maxOffer);
         session.update(auction);
         transaction.commit();
         session.close();
@@ -121,9 +140,9 @@ public class Persist {
         User user = getUserByUsername(username);
         Double maxOfferForProduct = getMaxOfferByUsernameAndProduct(username,productName);
         double currentCredits = user.getAmountOfCredits();
-        if(maxOfferForProduct != Constants.STARTING_OFFERING_NUMBER) {
+        if(maxOfferForProduct != null) {
             double amountToSubtract = amountOfOffer - maxOfferForProduct;
-            user.setAmountOfCredits(currentCredits - (amountToSubtract + maxOfferForProduct + Constants.OFFER_UPLOAD_COST));
+            user.setAmountOfCredits(currentCredits - (amountToSubtract + Constants.OFFER_UPLOAD_COST));
         }else {
             user.setAmountOfCredits(currentCredits - Constants.OFFER_UPLOAD_COST - amountOfOffer);
         }
@@ -146,7 +165,7 @@ public class Persist {
         User found = null;
         Session session = sessionFactory.openSession();
         found = (User) session.createQuery("FROM User WHERE username = :username " +
-                        "AND token = :token")
+                "AND token = :token")
                 .setParameter("username", username)
                 .setParameter("token", token)
                 .uniqueResult();
@@ -201,8 +220,8 @@ public class Persist {
     public User getUserByToken (String token) {
         Session session = sessionFactory.openSession();
         User user = (User) session.createQuery("From User WHERE token = :token")
-                        .setParameter("token", token)
-                                .uniqueResult();
+                .setParameter("token", token)
+                .uniqueResult();
         session.close();
         return user;
     }
@@ -230,25 +249,5 @@ public class Persist {
         session.close();
         return listOfOffers;
     }
-
-
-
-
-
-//    public void updateCredits(String username, int creditsTUpdate) {
-//        List<Integer> idList =  sessionFactory.openSession().createQuery("select username from User where username = : username")
-//                .setParameter("username", username).list();
-//        Session session = sessionFactory.openSession();
-//        int userId = idList.get(0);
-//        System.out.println();
-//        Transaction tx = null;
-//        tx = session.beginTransaction();
-//        User user = session.get(User.class, userId);
-//        user.setAmountOfCredits(creditsTUpdate);
-//        session.update(user);
-//        tx.commit();
-//    }
-
-
 
 }
