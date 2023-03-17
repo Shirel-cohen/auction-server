@@ -249,5 +249,23 @@ public class Persist {
         session.close();
         return listOfOffers;
     }
+    public List<Offers> getOffersByAuctionId (int auctionId) {
+        Session session = sessionFactory.openSession();
+        List<Offers> offersListForAuction = session.createQuery("FROM Offers WHERE auctionId = :auctionId")
+                .setParameter("auctionId", auctionId)
+                .list();
+        session.close();
+        return offersListForAuction;
+    }
+
+    public List<String> getTokensOwnOfProduct (String ownOfOffer) {
+        Session session = sessionFactory.openSession();
+        List<String> tokensOffersListForAuction = session.createQuery("SELECT token FROM User WHERE  username = :ownOfOffer")
+                .setParameter("ownOfOffer", ownOfOffer)
+                .list();
+        session.close();
+        return tokensOffersListForAuction;
+    }
+
 
 }

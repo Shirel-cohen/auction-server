@@ -1,4 +1,5 @@
 package com.dev.objects;
+import com.dev.utils.Constants;
 
 import javax.persistence.*;
 
@@ -23,13 +24,13 @@ public class User {
     private double amountOfCredits;
 
     public User() {
-        this.amountOfCredits = 1000;
+        this.amountOfCredits = Constants.INITIAL_CREDITS;
     }
 
     public User(String username, String token) {
         this.username = username;
         this.token = token;
-        this.amountOfCredits = 1000;
+        this.amountOfCredits = Constants.INITIAL_CREDITS;
     }
 
     public int getAmountOfAuctions() {

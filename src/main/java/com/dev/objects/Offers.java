@@ -1,12 +1,8 @@
 package com.dev.objects;
 
 import javax.persistence.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "offers")
@@ -22,6 +18,9 @@ public class Offers {
     @Column
     private String ownOfOffer;
 
+//    @ManyToOne
+//    @JoinColumn (name = "username")
+//    private User ownOfOffer;
     @Column
     private String productName;
     @Column
@@ -68,6 +67,8 @@ public class Offers {
     public void setOwnOfOffer(String ownOfOffer) {
         this.ownOfOffer = ownOfOffer;
     }
+
+
 
     public String getProductName() {
         return productName;

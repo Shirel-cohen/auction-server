@@ -67,20 +67,35 @@ public class DashboardController {
         return auctionResponse;
     }
 
-    @RequestMapping(value = "close-auction",method = RequestMethod.POST)
-    public BasicResponse closeAuction(int auctionId){
-        BasicResponse basicResponse = null;
-        Auction auction = persist.getAuctionById(auctionId);
-        if(auction.getAmountOfOffering() < 3){
-            basicResponse = new BasicResponse(false,ERROR_LESS_THAN_3_OFFERS);
-        }
-        else {
-            persist.closeAuction(auctionId);
-            // persist.updateOfferWon(auctionId);
-            basicResponse = new BasicResponse(true,null);
-        }
-        return basicResponse;
+//    @RequestMapping(value = "close-auction",method = RequestMethod.POST)
+//    public BasicResponse closeAuction(int auctionId){
+//        BasicResponse basicResponse = null;
+//        Auction auction = persist.getAuctionById(auctionId);
+//        if(auction.getAmountOfOffering() < 3){
+//            basicResponse = new BasicResponse(false,ERROR_LESS_THAN_3_OFFERS);
+//        }
+//        else {
+//            persist.closeAuction(auctionId);
+//            // persist.updateOfferWon(auctionId);
+//            basicResponse = new BasicResponse(true,null);
+//        }
+//        return basicResponse;
+//    }
+@RequestMapping(value = "close-auction",method = RequestMethod.POST)
+public BasicResponse closeAuction(int auctionId){
+    BasicResponse basicResponse = null;
+    List<Offers> offersForProduct = persist.getOffersByAuctionId(auctionId);
+    // Auction auction = persist.getAuctionById(auctionId);
+    if(offersForProduct.size() < 3){
+        basicResponse = new BasicResponse(false,ERROR_LESS_THAN_3_OFFERS);
     }
+    else {
+        persist.closeAuction(auctionId);
+        liveUpdatesController.sendCloseAuction(offersForProduct);
+        basicResponse = new BasicResponse(true,null);
+    }
+    return basicResponse;
+}
 
     @RequestMapping(value = "get-product-by-id", method = RequestMethod.GET)
     public BasicResponse getProductById(int id) {
@@ -133,6 +148,8 @@ public class DashboardController {
                 maxOfferForProductInGeneral = 0.0;
             }
             persist.updateMaxOfferForAuction(product.getId(),maxOfferForProductInGeneral);
+            String tokenOwnerOfProduct = persist.getUserByUsername(product.getOwnerOfTheProduct()).getToken();
+            liveUpdatesController.sendNewOffer(tokenOwnerOfProduct);
             basicResponse = new BasicResponse(true, null);
         }
         return basicResponse;
