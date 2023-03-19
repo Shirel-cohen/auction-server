@@ -1,7 +1,6 @@
 package com.dev.utils;
 
 
-import com.dev.models.AuctionModel;
 import com.dev.objects.Offers;
 import com.dev.objects.Auction;
 import com.dev.objects.User;
@@ -20,11 +19,11 @@ public class Persist {
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public Persist (SessionFactory sf) {
+    public Persist(SessionFactory sf) {
         this.sessionFactory = sf;
     }
 
-    public User getUserByUsername (String username) {
+    public User getUserByUsername(String username) {
         User found = null;
         Session session = sessionFactory.openSession();
         found = (User) session.createQuery("FROM User WHERE username = :username")
@@ -34,28 +33,28 @@ public class Persist {
         return found;
     }
 
-    public Auction getProductByProductNameAndOwnerOf (String productName, String ownerOfProduct) {
+    public Auction getProductByProductNameAndOwnerOf(String productName, String ownerOfProduct) {
         Auction found = null;
         Session session = sessionFactory.openSession();
         found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName and ownerOfTheProduct = :ownerOfProduct")
                 .setParameter("productName", productName)
-                .setParameter("ownerOfProduct",ownerOfProduct)
+                .setParameter("ownerOfProduct", ownerOfProduct)
                 .uniqueResult();
         session.close();
         return found;
     }
 
-    public Integer getAmountOfOffersForProductByUsername (String username, String productName){
+    public Integer getAmountOfOffersForProductByUsername(String username, String productName) {
         Session session = sessionFactory.openSession();
         List<Offers> amountOfOffers = session.createQuery("FROM Offers WHERE ownOfOffer = :username and productName = :productName")
-                .setParameter("username",username)
-                .setParameter("productName" ,productName)
+                .setParameter("username", username)
+                .setParameter("productName", productName)
                 .list();
         session.close();
         return amountOfOffers.size();
     }
 
-    public Auction getAuctionById (int id) {
+    public Auction getAuctionById(int id) {
         Session session = sessionFactory.openSession();
         Auction auction = (Auction) session.createQuery("From Auction WHERE id = :id")
                 .setParameter("id", id)
@@ -64,7 +63,7 @@ public class Persist {
         return auction;
     }
 
-    public List<Auction> getAuctionsByUsername (String username) {
+    public List<Auction> getAuctionsByUsername(String username) {
         Session session = sessionFactory.openSession();
         List<Auction> auctionListForUser = session.createQuery("FROM Auction WHERE ownerOfTheProduct = :username")
                 .setParameter("username", username)
@@ -73,7 +72,7 @@ public class Persist {
         return auctionListForUser;
     }
 
-    public Double getCreditsByUsername (String username) {
+    public Double getCreditsByUsername(String username) {
         Session session = sessionFactory.openSession();
         Double CreditsForUser = (Double) session.createQuery("SELECT amountOfCredits FROM User WHERE username = :username")
                 .setParameter("username", username)
@@ -83,7 +82,7 @@ public class Persist {
     }
 
 
-    public List<Offers> getOffersByUsername (String username) {
+    public List<Offers> getOffersByUsername(String username) {
         Session session = sessionFactory.openSession();
         List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer = :username")
                 .setParameter("username", username)
@@ -92,7 +91,7 @@ public class Persist {
         return offersListForUser;
     }
 
-    public Double getMaxOfferByUsernameAndProduct (String username, String productName){
+    public Double getMaxOfferByUsernameAndProduct(String username, String productName) {
         Session session = sessionFactory.openSession();
         Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer = :username AND productName = :productName")
                 .setParameter("username", username)
@@ -102,13 +101,13 @@ public class Persist {
         return maxOffer;
     }
 
-    public void saveUser (User user) {
+    public void saveUser(User user) {
         Session session = sessionFactory.openSession();
         session.save(user);
         session.close();
     }
 
-    public void saveOffer (Offers offer) {
+    public void saveOffer(Offers offer) {
         Session session = sessionFactory.openSession();
         session.save(offer);
         session.close();
@@ -124,7 +123,7 @@ public class Persist {
         session.close();
     }
 
-    public void updateMaxOfferForAuction (Integer auctionId, Double maxOffer){
+    public void updateMaxOfferForAuction(Integer auctionId, Double maxOffer) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Auction auction = getAuctionById(auctionId);
@@ -134,16 +133,16 @@ public class Persist {
         session.close();
     }
 
-    public void updateUserCredits (String username, double amountOfOffer , String productName){
+    public void updateUserCredits(String username, double amountOfOffer, String productName) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         User user = getUserByUsername(username);
-        Double maxOfferForProduct = getMaxOfferByUsernameAndProduct(username,productName);
+        Double maxOfferForProduct = getMaxOfferByUsernameAndProduct(username, productName);
         double currentCredits = user.getAmountOfCredits();
-        if(maxOfferForProduct != null) {
+        if (maxOfferForProduct != null) {
             double amountToSubtract = amountOfOffer - maxOfferForProduct;
             user.setAmountOfCredits(currentCredits - (amountToSubtract + Constants.OFFER_UPLOAD_COST));
-        }else {
+        } else {
             user.setAmountOfCredits(currentCredits - Constants.OFFER_UPLOAD_COST - amountOfOffer);
         }
         session.update(user);
@@ -151,7 +150,18 @@ public class Persist {
         session.close();
     }
 
-    public void closeAuction (int auctionId){
+    public void updateUserCreditsAfterAuctionIsClosed (String username,Double amountToAdd){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = getUserByUsername(username);
+        double currentCredits = user.getAmountOfCredits();
+        user.setAmountOfCredits(currentCredits + amountToAdd);
+        session.update(user);
+        transaction.commit();
+        session.close();
+    }
+
+    public void closeAuction(int auctionId) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         Auction auction = session.get(Auction.class, auctionId);
@@ -161,7 +171,7 @@ public class Persist {
         session.close();
     }
 
-    public User getUserByUsernameAndToken (String username, String token) {
+    public User getUserByUsernameAndToken(String username, String token) {
         User found = null;
         Session session = sessionFactory.openSession();
         found = (User) session.createQuery("FROM User WHERE username = :username " +
@@ -184,9 +194,61 @@ public class Persist {
     }
 
     public void updateOfferWon(int auctionId) {
+        List<Offers> offersForAuction = getOffersByAuctionId(auctionId);
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Offers offerWithMaxOfferAmount = offersForAuction.get(0);
+        for (Offers offer : offersForAuction) {
+            if (offer.getAmountOfOffer() < offerWithMaxOfferAmount.getAmountOfOffer()) {
+                offer.setChosen(false);
+                session.update(offer);
+            } else if (offer.getAmountOfOffer() > offerWithMaxOfferAmount.getAmountOfOffer()) {
+                offerWithMaxOfferAmount.setChosen(false);
+                session.update(offerWithMaxOfferAmount);
+                offerWithMaxOfferAmount = offer;
+            } else if (offer.getAmountOfOffer() == offerWithMaxOfferAmount.getAmountOfOffer()) {
+                int isEarlier = offer.getTimeStartOffering().compareTo(offerWithMaxOfferAmount.getTimeStartOffering());
+                if (isEarlier < 0) {
+                    offerWithMaxOfferAmount = offer;
+                }
+            }
+        }
+        offerWithMaxOfferAmount.setChosen(true);
+        session.update(offerWithMaxOfferAmount);
+        transaction.commit();
+        session.close();
+    }
+
+    public void returnOrAddCreditsToUserAfterAuctionIsClosed (int auctionId){
+        List<Offers> offersList = getOffersByAuctionId(auctionId);
         Auction auction = getAuctionById(auctionId);
+        List<User> usersList = new ArrayList<>();
+        User user = null;
+        Offers offerWon = getOfferThatWon(auctionId);
+        for (Offers offer : offersList) {
+            user = getUserByUsername(offer.getOwnOfOffer());
+            if (!(user.getUsername().equals(offerWon.getOwnOfOffer())) && !(offer.isChosen())){
+                usersList.add(user);
+            }
+            if(offer.isChosen()){
+                Double moneyEarned = getMaxOfferForProduct(offer.getOwnOfProduct(),auctionId) * Constants.MONEY_PERCENT_TO_GIVE_BACK;
+                updateUserCreditsAfterAuctionIsClosed(offer.getOwnOfProduct(),moneyEarned);
+            }
+        }
+        for(User user1 : usersList){
+            Double maxOfferForUser = getMaxOfferByUsernameAndProduct(user1.getUsername(), auction.getProductName());
+            updateUserCreditsAfterAuctionIsClosed(user1.getUsername(),maxOfferForUser);
+        }
+    }
 
-
+    public Offers getOfferThatWon(int auctionId) {
+        Session session = sessionFactory.openSession();
+        Offers offerWon = (Offers) session.createQuery("FROM Offers WHERE auctionId = :auctionId AND isChosen = :true")
+                .setParameter("auctionId", auctionId)
+                .setParameter("true", true)
+                .uniqueResult();
+        session.close();
+        return offerWon;
     }
 
     public List<User> getAllUsers () {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,12 +38,19 @@ public class LiveUpdatesController {
     }
 
     public void sendCloseAuction(List<Offers> offers) {
-        List<String> offersNames = offers.stream()
-                .map(offer -> offer.getOwnOfOffer())
+        List<User> usersList = new ArrayList<>();
+        for (Offers offer : offers) {
+            User user = persist.getUserByUsername(offer.getOwnOfOffer());
+            if (!usersList.contains(user)) {
+                usersList.add(user);
+            }
+        }
+        List<String> usersTokens = usersList.stream()
+                .map(user -> user.getToken())
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<SseEmitter> emitters = offersNames.stream()
+        List<SseEmitter> emitters = usersTokens.stream()
                 .map(this.emitterMap::get)
                 .collect(Collectors.toList());
 
