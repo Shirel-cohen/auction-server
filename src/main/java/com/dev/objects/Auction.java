@@ -36,8 +36,10 @@ public class Auction {
     @Column
     private int minCost;
 
-    @Column
-    private String ownerOfTheProduct;
+
+    @ManyToOne
+    @JoinColumn (name = "ownerOfTheProduct")
+    private User ownerOfTheProduct;
 
     @Column
     private double maxOfferAmount;
@@ -56,7 +58,7 @@ public class Auction {
         this.minCost = minCost;
     }
 
-    public Auction(String productName, String productDescription, int minCost,String ownerOfTheProduct, String productImage) {
+    public Auction(String productName, String productDescription, int minCost,User ownerOfTheProduct, String productImage) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.minCost = minCost;
@@ -107,11 +109,11 @@ public class Auction {
         this.minCost = minCost;
     }
 
-    public String getOwnerOfTheProduct() {
+    public User getOwnerOfTheProduct() {
         return ownerOfTheProduct;
     }
 
-    public void setOwnerOfTheProduct(String ownerOfTheProduct) {
+    public void setOwnerOfTheProduct(User ownerOfTheProduct) {
         this.ownerOfTheProduct = ownerOfTheProduct;
     }
 

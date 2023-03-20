@@ -36,7 +36,7 @@ public class Persist {
     public Auction getProductByProductNameAndOwnerOf(String productName, String ownerOfProduct) {
         Auction found = null;
         Session session = sessionFactory.openSession();
-        found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName and ownerOfTheProduct = :ownerOfProduct")
+        found = (Auction) session.createQuery("FROM Auction WHERE productName = :productName and ownerOfTheProduct.username = :ownerOfProduct")
                 .setParameter("productName", productName)
                 .setParameter("ownerOfProduct", ownerOfProduct)
                 .uniqueResult();
@@ -46,7 +46,7 @@ public class Persist {
 
     public Integer getAmountOfOffersForProductByUsername(String username, String productName) {
         Session session = sessionFactory.openSession();
-        List<Offers> amountOfOffers = session.createQuery("FROM Offers WHERE ownOfOffer = :username and productName = :productName")
+        List<Offers> amountOfOffers = session.createQuery("FROM Offers WHERE ownOfOffer.username = :username and auction.productName = :productName")
                 .setParameter("username", username)
                 .setParameter("productName", productName)
                 .list();
@@ -65,7 +65,7 @@ public class Persist {
 
     public List<Auction> getAuctionsByUsername(String username) {
         Session session = sessionFactory.openSession();
-        List<Auction> auctionListForUser = session.createQuery("FROM Auction WHERE ownerOfTheProduct = :username")
+        List<Auction> auctionListForUser = session.createQuery("FROM Auction WHERE ownerOfTheProduct.username = :username")
                 .setParameter("username", username)
                 .list();
         session.close();
@@ -84,7 +84,7 @@ public class Persist {
 
     public List<Offers> getOffersByUsername(String username) {
         Session session = sessionFactory.openSession();
-        List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer = :username")
+        List<Offers> offersListForUser = session.createQuery("FROM Offers WHERE ownOfOffer.username = :username")
                 .setParameter("username", username)
                 .list();
         session.close();
@@ -93,7 +93,7 @@ public class Persist {
 
     public Double getMaxOfferByUsernameAndProduct(String username, String productName) {
         Session session = sessionFactory.openSession();
-        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer = :username AND productName = :productName")
+        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfOffer.username = :username AND auction.productName = :productName")
                 .setParameter("username", username)
                 .setParameter("productName", productName)
                 .uniqueResult();
@@ -185,7 +185,7 @@ public class Persist {
 
     public Double getMaxOfferForProduct(String ownOfProduct, int auctionId) {
         Session session = sessionFactory.openSession();
-        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE ownOfProduct = :ownOfProduct AND auctionId = :auctionId")
+        Double maxOffer = (Double) session.createQuery("SELECT MAX (amountOfOffer) FROM Offers WHERE auction.ownerOfTheProduct.username = :ownOfProduct AND auction.id = :auctionId")
                 .setParameter("ownOfProduct", ownOfProduct)
                 .setParameter("auctionId", auctionId)
                 .uniqueResult();
@@ -226,13 +226,13 @@ public class Persist {
         User user = null;
         Offers offerWon = getOfferThatWon(auctionId);
         for (Offers offer : offersList) {
-            user = getUserByUsername(offer.getOwnOfOffer());
+            user = getUserByUsername(offer.getOwnOfOffer().getUsername());
             if (!(user.getUsername().equals(offerWon.getOwnOfOffer())) && !(offer.isChosen())){
                 usersList.add(user);
             }
             if(offer.isChosen()){
-                Double moneyEarned = getMaxOfferForProduct(offer.getOwnOfProduct(),auctionId) * Constants.MONEY_PERCENT_TO_GIVE_BACK;
-                updateUserCreditsAfterAuctionIsClosed(offer.getOwnOfProduct(),moneyEarned);
+                Double moneyEarned = getMaxOfferForProduct(offer.getAuction().getOwnerOfTheProduct().getUsername(),auctionId) * Constants.MONEY_PERCENT_TO_GIVE_BACK;
+                updateUserCreditsAfterAuctionIsClosed(offer.getAuction().getOwnerOfTheProduct().getUsername(),moneyEarned);
             }
         }
         for(User user1 : usersList){
@@ -243,7 +243,7 @@ public class Persist {
 
     public Offers getOfferThatWon(int auctionId) {
         Session session = sessionFactory.openSession();
-        Offers offerWon = (Offers) session.createQuery("FROM Offers WHERE auctionId = :auctionId AND isChosen = :true")
+        Offers offerWon = (Offers) session.createQuery("FROM Offers WHERE auction.id = :auctionId AND isChosen = :true")
                 .setParameter("auctionId", auctionId)
                 .setParameter("true", true)
                 .uniqueResult();
@@ -294,7 +294,7 @@ public class Persist {
         session1.close();
         Session session2 = sessionFactory.openSession();
         Transaction transaction = session2.beginTransaction();
-        User user = getUserByUsername(auction.getOwnerOfTheProduct());
+        User user = getUserByUsername(auction.getOwnerOfTheProduct().getUsername());
         double currentCredits = user.getAmountOfCredits();
         user.setAmountOfCredits(currentCredits - Constants.PRODUCT_UPLOAD_COST);
         session2.update(user);
@@ -304,7 +304,7 @@ public class Persist {
 
     public List<Offers> listOfMyOffers (String username,String productName){
         Session session= sessionFactory.openSession();
-        List<Offers> listOfOffers = session.createQuery("SELECT amountOfOffer FROM Offers WHERE ownOfOffer = :username and productName = :productName")
+        List<Offers> listOfOffers = session.createQuery("SELECT amountOfOffer FROM Offers WHERE ownOfOffer.username = :username and auction.productName = :productName")
                 .setParameter("username",username)
                 .setParameter("productName",productName)
                 .list();
@@ -313,7 +313,7 @@ public class Persist {
     }
     public List<Offers> getOffersByAuctionId (int auctionId) {
         Session session = sessionFactory.openSession();
-        List<Offers> offersListForAuction = session.createQuery("FROM Offers WHERE auctionId = :auctionId")
+        List<Offers> offersListForAuction = session.createQuery("FROM Offers WHERE auction.id = :auctionId")
                 .setParameter("auctionId", auctionId)
                 .list();
         session.close();

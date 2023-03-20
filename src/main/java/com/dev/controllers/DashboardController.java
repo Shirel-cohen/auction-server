@@ -61,7 +61,8 @@ public class DashboardController {
 
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
-        Auction productToAdd = new Auction(productName, describe, minimalCost, owner, img);
+        User user = persist.getUserByUsername(owner);
+        Auction productToAdd = new Auction(productName, describe, minimalCost, user, img);
         AuctionResponse auctionResponse = new AuctionResponse(true, null, productToAdd);
         persist.uploadProduct(productToAdd);
         return auctionResponse;
@@ -89,7 +90,7 @@ public BasicResponse closeAuction(int auctionId){
         Auction auction = persist.getAuctionById(id);
         BasicResponse basicResponse = null;
         if (auction != null) {
-            basicResponse = new AuctionResponse(true, null, auction);
+            basicResponse = new ProductPageResponse(auction);
         } else {
             basicResponse = new BasicResponse(false, ERROR_NO_SUCH_PRODUCT);
         }
@@ -126,7 +127,7 @@ public BasicResponse closeAuction(int auctionId){
         else if (product.getMinCost() > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_LOWER_THAN_MIN_COST);
         } else {
-            Offers newOffer = new Offers(product.getId(),ownOfOffer,productName,ownOfProduct,amountOfOffer);
+            Offers newOffer = new Offers(product,user,amountOfOffer);
             persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
             persist.saveOffer(newOffer);
             persist.updateAmountOfOffersForAuction(product.getId(),amountOfOffering);
@@ -135,7 +136,7 @@ public BasicResponse closeAuction(int auctionId){
                 maxOfferForProductInGeneral = 0.0;
             }
             persist.updateMaxOfferForAuction(product.getId(),maxOfferForProductInGeneral);
-            String tokenOwnerOfProduct = persist.getUserByUsername(product.getOwnerOfTheProduct()).getToken();
+            String tokenOwnerOfProduct = persist.getUserByUsername(product.getOwnerOfTheProduct().getUsername()).getToken();
             liveUpdatesController.sendNewOffer(tokenOwnerOfProduct);
             basicResponse = new BasicResponse(true, null);
         }

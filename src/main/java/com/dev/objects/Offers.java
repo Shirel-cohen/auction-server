@@ -12,19 +12,14 @@ public class Offers {
     @Column
     private int id;
 
-    @Column
-    private int auctionId;
+    @ManyToOne
+    @JoinColumn(name = "auctionId")
+    private Auction auction;
 
-    @Column
-    private String ownOfOffer;
+    @ManyToOne
+    @JoinColumn
+    private User ownOfOffer;
 
-//    @ManyToOne
-//    @JoinColumn (name = "username")
-//    private User ownOfOffer;
-    @Column
-    private String productName;
-    @Column
-    private String ownOfProduct;
     @Column
     private double amountOfOffer;
 
@@ -41,11 +36,10 @@ public class Offers {
     public Offers() {
 
     }
-    public Offers(int auctionId, String ownOfOffer, String productName,String ownOfProduct, double amountOfOffer) {
-        this.auctionId= auctionId;
+
+    public Offers(Auction auction,User ownOfOffer, double amountOfOffer) {
+        this.auction= auction;
         this.ownOfOffer = ownOfOffer;
-        this.productName = productName;
-        this.ownOfProduct = ownOfProduct;
         this.amountOfOffer = amountOfOffer;
         this.isChosen = false;
         this.dateStartOffering =LocalDate.now();
@@ -60,30 +54,12 @@ public class Offers {
         this.id = id;
     }
 
-    public String getOwnOfOffer() {
+    public User getOwnOfOffer() {
         return ownOfOffer;
     }
 
-    public void setOwnOfOffer(String ownOfOffer) {
+    public void setOwnOfOffer(User ownOfOffer) {
         this.ownOfOffer = ownOfOffer;
-    }
-
-
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getOwnOfProduct() {
-        return ownOfProduct;
-    }
-
-    public void setOwnOfProduct(String ownOfProduct) {
-        this.ownOfProduct = ownOfProduct;
     }
 
     public double getAmountOfOffer() {
@@ -118,12 +94,12 @@ public class Offers {
         this.timeStartOffering = timeStartOffering;
     }
 
-    public int getAuctionId() {
-        return auctionId;
+    public Auction getAuction() {
+        return auction;
     }
 
-    public void setAuctionId(int auctionId) {
-        this.auctionId = auctionId;
+    public void setAuction(Auction auction) {
+        this.auction = auction;
     }
 }
 

@@ -38,15 +38,8 @@ public class LiveUpdatesController {
     }
 
     public void sendCloseAuction(List<Offers> offers) {
-        List<User> usersList = new ArrayList<>();
-        for (Offers offer : offers) {
-            User user = persist.getUserByUsername(offer.getOwnOfOffer());
-            if (!usersList.contains(user)) {
-                usersList.add(user);
-            }
-        }
-        List<String> usersTokens = usersList.stream()
-                .map(user -> user.getToken())
+        List<String> usersTokens = offers.stream()
+                .map(offer -> offer.getOwnOfOffer().getToken())
                 .distinct()
                 .collect(Collectors.toList());
 
