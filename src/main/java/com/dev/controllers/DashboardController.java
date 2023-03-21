@@ -46,10 +46,16 @@ public class DashboardController {
     }
 
     @RequestMapping(value = "get-all-offers-for-user", method = RequestMethod.GET)
-    public AllOffersResponse getAllOffersForUser(String username) {
+    public BasicResponse getAllOffersForUser(String username) {
         List<Offers> offersListForUser = persist.getOffersByUsername(username);
-        AllOffersResponse allOffersResponse = new AllOffersResponse(true, null, offersListForUser);
-        return allOffersResponse;
+        if(offersListForUser!=null){
+            MyOffersPageResponse myOffersPageResponse = new MyOffersPageResponse(offersListForUser);
+            return myOffersPageResponse;
+        }else{
+            BasicResponse basicResponse = new BasicResponse(false, ERROR_NO_OFFERS);
+            return basicResponse;
+        }
+
     }
 
     @RequestMapping(value = "get-credits-for-user", method = RequestMethod.GET)
@@ -58,6 +64,14 @@ public class DashboardController {
         CreditsResponse creditsResponse = new CreditsResponse(true, null, creditsForUser);
         return creditsResponse;
     }
+
+//    @RequestMapping(value = "get-amount-of-offers-on-product-for-user", method = RequestMethod.GET)
+//    public AuctionResponse getAmountOffersForUserOnProduct(String username, String productName) {
+//        int amountOfOffers = persist.getNumberOfOfferByUsernameAndProduct(username, productName);
+//        AuctionResponse auctionResponse = new AuctionResponse(true, null, amountOfOffers);
+//        return auctionResponse;
+//    }
+
 
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
@@ -102,7 +116,7 @@ public BasicResponse closeAuction(int auctionId){
         List<Offers> listOfMyOffers = persist.listOfMyOffers(username, productName);
         BasicResponse basicResponse = null;
         if (listOfMyOffers != null) {
-            basicResponse = new AllOffersResponse(true, null, listOfMyOffers);
+            basicResponse = new AllOffersResponse(listOfMyOffers);
         } else {
             basicResponse = new BasicResponse(false, ERROR_NO_OFFERS);
         }
@@ -118,7 +132,11 @@ public BasicResponse closeAuction(int auctionId){
             maxOfferForSpecificUsername = persist.getMaxOfferByUsernameAndProduct(ownOfOffer, productName);
         }
         BasicResponse basicResponse = null;
-        if (user.getAmountOfCredits() < amountOfOffer) {
+        if(product.getOwnerOfTheProduct().getUsername().equals(ownOfOffer)){
+            basicResponse = new BasicResponse(false, ERROR_YOU_ARE_THE_OWNER_OF_THE_PRODUCT);
+
+        }
+        else if (user.getAmountOfCredits() < amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_NOT_ENOUGH_CREDITS);
         }
         else if (maxOfferForSpecificUsername > amountOfOffer) {
@@ -126,11 +144,12 @@ public BasicResponse closeAuction(int auctionId){
         }
         else if (product.getMinCost() > amountOfOffer) {
             basicResponse = new BasicResponse(false, ERROR_OFFER_LOWER_THAN_MIN_COST);
-        } else {
+        }else {
             Offers newOffer = new Offers(product,user,amountOfOffer);
             persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
             persist.saveOffer(newOffer);
             persist.updateAmountOfOffersForAuction(product.getId(),amountOfOffering);
+         //   persist.updateNumberOfOffersForUserInProduct(product.getId(), amountOfOfferingForUser);
             Double maxOfferForProductInGeneral = persist.getMaxOfferForProduct(ownOfProduct, product.getId());
             if(maxOfferForProductInGeneral == null){
                 maxOfferForProductInGeneral = 0.0;

@@ -15,6 +15,7 @@ public class ProductPageModel {
     private double minimalCost;
     private boolean isOpen;
     private String image;
+    private int amountOfOfferingOnProductForUser;
 
     public ProductPageModel(){
     }
@@ -29,6 +30,7 @@ public class ProductPageModel {
         this.minimalCost = auction.getMinCost();
         this.isOpen = auction.isOpen();
         this.image = auction.getProductImage();
+     //   this.amountOfOfferingOnProductForUser=auction.getAmountOfOfferingForUser();
 
     }
 
@@ -94,5 +96,13 @@ public class ProductPageModel {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getAmountOfOfferingOnProductForUser() {
+        return amountOfOfferingOnProductForUser;
+    }
+
+    public void setAmountOfOfferingOnProductForUser(int amountOfOfferingOnProductForUser) {
+        this.amountOfOfferingOnProductForUser = amountOfOfferingOnProductForUser;
     }
 }

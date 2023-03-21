@@ -1,6 +1,7 @@
 package com.dev.models;
 
 import com.dev.objects.Auction;
+import com.dev.objects.Offers;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
@@ -13,9 +14,9 @@ public class AuctionModel {
     private String productImage;
     private String dateOpening;
     private int amountOfOffers;
-    private int amountOfOfferingForUser;
     private boolean isOpen;
     private double maxOfferAmount;
+    private String ownerOfTheProduct;
 
     public AuctionModel () {
     }
@@ -33,6 +34,8 @@ public class AuctionModel {
         this.dateOpening = simpleDateFormat.format(auction.getDateOpenTender());
         this.amountOfOffers = auction.getAmountOfOffering();
         this.maxOfferAmount = auction.getMaxOfferAmount();
+        this.ownerOfTheProduct=auction.getOwnerOfTheProduct().getUsername();
+
     }
 
     public int getId() {
@@ -83,13 +86,6 @@ public class AuctionModel {
         this.amountOfOffers = amountOfOffers;
     }
 
-    public int getAmountOfOfferingForUser() {
-        return amountOfOfferingForUser;
-    }
-
-    public void setAmountOfOfferingForUser(int amountOfOfferingForUser) {
-        this.amountOfOfferingForUser = amountOfOfferingForUser;
-    }
 
     public boolean isOpen() {
         return isOpen;
@@ -106,4 +102,13 @@ public class AuctionModel {
     public void setMaxOfferAmount(double maxOfferAmount) {
         this.maxOfferAmount = maxOfferAmount;
     }
+
+    public String getOwnerOfTheProduct() {
+        return ownerOfTheProduct;
+    }
+
+    public void setOwnerOfTheProduct(String ownerOfTheProduct) {
+        this.ownerOfTheProduct = ownerOfTheProduct;
+    }
 }
+

@@ -100,6 +100,15 @@ public class Persist {
         session.close();
         return maxOffer;
     }
+    public int getNumberOfOfferByUsernameAndProduct(String username, String productName) {
+        Session session = sessionFactory.openSession();
+        List<Offers> numOfOffers =session.createQuery("FROM Offers WHERE ownOfOffer.username = :username AND auction.productName = :productName")
+                .setParameter("username", username)
+                .setParameter("productName", productName)
+                .list();
+        session.close();
+        return numOfOffers.size();
+    }
 
     public void saveUser(User user) {
         Session session = sessionFactory.openSession();

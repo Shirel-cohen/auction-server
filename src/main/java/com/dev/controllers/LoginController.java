@@ -92,7 +92,12 @@ public class LoginController {
     @RequestMapping (value = "get-all-offers", method = RequestMethod.GET)
     public BasicResponse getAllOffers () {
         List<Offers> offers = persist.getAllOffers();
-        AllOffersResponse allOffersResponse = new AllOffersResponse(true, null, offers);
-        return allOffersResponse;
+        BasicResponse basicResponse=null;
+        if(offers!=null){
+             basicResponse = new AllOffersResponse(offers);
+        }else
+             basicResponse = new BasicResponse(false, ERROR_NO_OFFERS);
+
+        return basicResponse;
     }
 }

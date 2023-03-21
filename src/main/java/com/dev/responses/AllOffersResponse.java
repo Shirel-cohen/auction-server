@@ -9,6 +9,7 @@ public class AllOffersResponse extends BasicResponse {
     private List<Offers> offers;
 
     public AllOffersResponse(List<Offers> offers) {
+        this.setSuccess(true);
         this.offers = offers;
     }
 

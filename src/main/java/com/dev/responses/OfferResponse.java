@@ -7,6 +7,7 @@ public class OfferResponse extends BasicResponse {
 
     private Offers offer;
     private double maxOfferForProduct;
+    private Integer offersForUser;
 
     public OfferResponse(Offers offer) {
         this.offer = offer;
@@ -16,6 +17,7 @@ public class OfferResponse extends BasicResponse {
         super(success, errorCode);
         this.maxOfferForProduct=maxOffer;
     }
+
 
     public Offers getOffer() {
         return offer;

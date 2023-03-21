@@ -44,11 +44,12 @@ public class Auction {
     @Column
     private double maxOfferAmount;
 
+
     public Auction(){
 
     }
 
-    public Auction(String productName, String productImage, String dateOpenTender, int amountOfOffering, String productDescription, int minCost) {
+    public Auction(String productName, String productImage, String productDescription, int minCost) {
         this.productName = productName;
         this.productImage = productImage;
         this.dateOpenTender = new Date();
@@ -56,6 +57,7 @@ public class Auction {
         this.isOpen = true;
         this.productDescription= productDescription;
         this.minCost = minCost;
+
     }
 
     public Auction(String productName, String productDescription, int minCost,User ownerOfTheProduct, String productImage) {
@@ -148,5 +150,6 @@ public class Auction {
     public void setMaxOfferAmount(double maxOfferAmount) {
         this.maxOfferAmount = maxOfferAmount;
     }
+
 }
 

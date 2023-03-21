@@ -5,6 +5,7 @@ import com.dev.objects.Auction;
 public class AuctionResponse extends BasicResponse {
 
     private Auction auction;
+    private int offersForUser;
 
     public AuctionResponse(Auction auction) {
         this.auction = auction;
@@ -14,6 +15,7 @@ public class AuctionResponse extends BasicResponse {
         super(success, errorCode);
         this.auction = auction;
     }
+
 
     public Auction getAuction() {
         return auction;
