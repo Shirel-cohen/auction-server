@@ -13,7 +13,9 @@ public class Errors {
     public static final int ERROR_NOT_ENOUGH_CREDITS = 1010;
     public static final int ERROR_OFFER_NOT_HIGH_ENOUGH = 1011;
     public static final int ERROR_OFFER_LOWER_THAN_MIN_COST = 1012;
-    public static final int ERROR_YOU_ARE_THE_OWNER_OF_THE_PRODUCT= 1013;
+    public static final int ERROR_YOU_ARE_THE_OWNER_OF_THE_PRODUCT = 1013;
+
+    public static final int ERROR_INVALID_CREDIT= 1014;
 
 
 

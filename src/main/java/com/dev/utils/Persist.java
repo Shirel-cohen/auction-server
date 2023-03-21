@@ -32,6 +32,16 @@ public class Persist {
         session.close();
         return found;
     }
+    public double updateUserCredit(String token, Double newCredit) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = getUserByToken(token);
+        user.setAmountOfCredits(newCredit);
+        session.update(user);
+        transaction.commit();
+        session.close();
+        return user.getAmountOfCredits();
+    }
 
     public Auction getProductByProductNameAndOwnerOf(String productName, String ownerOfProduct) {
         Auction found = null;
@@ -304,6 +314,7 @@ public class Persist {
         Session session2 = sessionFactory.openSession();
         Transaction transaction = session2.beginTransaction();
         User user = getUserByUsername(auction.getOwnerOfTheProduct().getUsername());
+        user.setAmountOfAuctions(user.getAmountOfAuctions() + 1);
         double currentCredits = user.getAmountOfCredits();
         user.setAmountOfCredits(currentCredits - Constants.PRODUCT_UPLOAD_COST);
         session2.update(user);

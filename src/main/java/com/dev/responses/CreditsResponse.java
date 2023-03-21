@@ -7,6 +7,10 @@ public class CreditsResponse extends BasicResponse {
         this.credits = credits;
     }
 
+    public CreditsResponse() {
+
+    }
+
     public CreditsResponse(boolean success, Integer errorCode, Double credits) {
         super(success, errorCode);
         this.credits = credits;
