@@ -65,14 +65,6 @@ public class DashboardController {
         return creditsResponse;
     }
 
-//    @RequestMapping(value = "get-amount-of-offers-on-product-for-user", method = RequestMethod.GET)
-//    public AuctionResponse getAmountOffersForUserOnProduct(String username, String productName) {
-//        int amountOfOffers = persist.getNumberOfOfferByUsernameAndProduct(username, productName);
-//        AuctionResponse auctionResponse = new AuctionResponse(true, null, amountOfOffers);
-//        return auctionResponse;
-//    }
-
-
     @RequestMapping(value = "upload-product")
     public BasicResponse uploadProduct(String owner, String productName, String img, String describe, int minimalCost) {
         User user = persist.getUserByUsername(owner);
