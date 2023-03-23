@@ -1,6 +1,4 @@
 package com.dev.utils;
-
-
 import com.dev.objects.Offers;
 import com.dev.objects.Auction;
 import com.dev.objects.User;
@@ -9,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +17,20 @@ public class Persist {
     private final SessionFactory sessionFactory;
 
     @Autowired
+    private Utils utils;
+
+    @Autowired
     public Persist(SessionFactory sf) {
         this.sessionFactory = sf;
+    }
+
+    @PostConstruct
+    public void createAdmin(){
+        User admin = getUserByUsername("Admin");
+        if (admin == null) {
+            admin = new User("Admin" , utils.createHash("Admin","12345678"));
+            saveUser(admin);
+        }
     }
 
     public User getUserByUsername(String username) {
@@ -32,6 +42,7 @@ public class Persist {
         session.close();
         return found;
     }
+
     public double updateUserCredit(String token, Double newCredit) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
