@@ -257,7 +257,7 @@ public class Persist {
         Offers offerWon = getOfferThatWon(auctionId);
         for (Offers offer : offersList) {
             user = getUserByUsername(offer.getOwnOfOffer().getUsername());
-            if (!(user.getUsername().equals(offerWon.getOwnOfOffer())) && !(offer.isChosen())){
+            if (!(user.getUsername().equals(offerWon.getOwnOfOffer().getUsername())) && !(offer.isChosen())){
                 usersList.add(user);
             }
             if(offer.isChosen()){
