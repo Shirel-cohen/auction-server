@@ -141,7 +141,6 @@ public BasicResponse closeAuction(int auctionId){
             persist.updateUserCredits(ownOfOffer,amountOfOffer,productName);
             persist.saveOffer(newOffer);
             persist.updateAmountOfOffersForAuction(product.getId(),amountOfOffering);
-         //   persist.updateNumberOfOffersForUserInProduct(product.getId(), amountOfOfferingForUser);
             Double maxOfferForProductInGeneral = persist.getMaxOfferForProduct(ownOfProduct, product.getId());
             if(maxOfferForProductInGeneral == null){
                 maxOfferForProductInGeneral = 0.0;

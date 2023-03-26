@@ -38,7 +38,8 @@ public class Persist {
         Session session = sessionFactory.openSession();
         found = (User) session.createQuery("FROM User WHERE username = :username")
                 .setParameter("username", username)
-                .uniqueResult();
+                        .uniqueResult();
+
         session.close();
         return found;
     }
@@ -121,15 +122,6 @@ public class Persist {
         session.close();
         return maxOffer;
     }
-    public int getNumberOfOfferByUsernameAndProduct(String username, String productName) {
-        Session session = sessionFactory.openSession();
-        List<Offers> numOfOffers =session.createQuery("FROM Offers WHERE ownOfOffer.username = :username AND auction.productName = :productName")
-                .setParameter("username", username)
-                .setParameter("productName", productName)
-                .list();
-        session.close();
-        return numOfOffers.size();
-    }
 
     public void saveUser(User user) {
         Session session = sessionFactory.openSession();
@@ -205,7 +197,7 @@ public class Persist {
         User found = null;
         Session session = sessionFactory.openSession();
         found = (User) session.createQuery("FROM User WHERE username = :username " +
-                "AND token = :token")
+                        "AND token = :token")
                 .setParameter("username", username)
                 .setParameter("token", token)
                 .uniqueResult();
@@ -297,7 +289,7 @@ public class Persist {
 
     public List<Offers> getAllOffers () {
         Session session = sessionFactory.openSession();
-        List<Offers> allOffers = session.createQuery("FROM Offers ").list();
+        List<Offers> allOffers = session.createQuery("SELECT auction.productName, ownOfOffer.username ,amountOfOffer FROM Offers ").list();
         session.close();
         return allOffers;
     }
@@ -351,14 +343,7 @@ public class Persist {
         return offersListForAuction;
     }
 
-    public List<String> getTokensOwnOfProduct (String ownOfOffer) {
-        Session session = sessionFactory.openSession();
-        List<String> tokensOffersListForAuction = session.createQuery("SELECT token FROM User WHERE  username = :ownOfOffer")
-                .setParameter("ownOfOffer", ownOfOffer)
-                .list();
-        session.close();
-        return tokensOffersListForAuction;
-    }
+
 
 
 }

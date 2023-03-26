@@ -30,7 +30,6 @@ public class ProductPageModel {
         this.minimalCost = auction.getMinCost();
         this.isOpen = auction.isOpen();
         this.image = auction.getProductImage();
-     //   this.amountOfOfferingOnProductForUser=auction.getAmountOfOfferingForUser();
 
     }
 
